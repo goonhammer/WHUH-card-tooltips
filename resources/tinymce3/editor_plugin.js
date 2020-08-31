@@ -1,5 +1,5 @@
 (function() {
-    tinymce.create('tinymce.plugins.DeckboxPlugin', {
+    tinymce.create('tinymce.plugins.CardtooltipPlugin', {
 	    /**
 	     * Initializes the plugin, this will be executed after the plugin has been created.
 	     * This call is done before the editor instance has finished it's initialization so use the onInit event
@@ -9,12 +9,12 @@
 	     * @param {string} url Absolute URL to where the plugin is located.
 	     */
         init : function(ed, url) {
-	        ed.addButton('deckbox', {
-		        title : 'Magic the Gathering card',
-	            image : url + '/../../images/mtg.png',
+	        ed.addButton('cardtooltip', {
+		        title : 'Warhammer Underworlds Card',
+	            image : url + '/../../images/whuw.png',
 	            onclick : function() {
                     var txt = ed.selection.getContent();
-                    ed.selection.setContent('[mtg_card]' + txt + '[/mtg_card]');
+                    ed.selection.setContent('[whuw_card]' + txt + '[/whuw_card]');
 		        }
             });
 	    },
@@ -41,15 +41,15 @@
          */
         getInfo : function() {
 	        return {
-	            longname : "Magic the Gathering Card Tooltips",
-	            author : 'Sebastian Zaha',
-	            authorurl : 'https://deckbox.org',
-	            infourl : 'https://github.com/SebastianZaha/wordpress_mtg_tooltips',
-	            version : "3.1.0"
+	            longname : "Warhammer Underworld Card Tooltips",
+	            author : 'Robert Baker',
+	            authorurl : 'https://goonhammer.com',
+	            infourl : 'https://github.com/goonhammer/WHUW-card-tooltips',
+	            version : "2020.08.31a"
 	        };
         }
     });
 
     // Register plugin
-    tinymce.PluginManager.add('deckbox', tinymce.plugins.DeckboxPlugin);
+    tinymce.PluginManager.add('whuwctt', tinymce.plugins.CardtooltipPlugin);
 })();
