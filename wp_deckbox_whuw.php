@@ -1,26 +1,26 @@
 <?php
 /*
-Plugin Name: Magic the Gathering Card Tooltips
-Plugin URI: https://github.com/SebastianZaha/wordpress_mtg_tooltips
-Description: Easily transform Magic the Gathering card names into links that show the card
+Plugin Name: Warhammer Underworlds Card Tooltips
+Plugin URI: https://github.com/goonhammer/WHUW-card-tooltips
+Description: Easily transform Warhammer Underworlds card names into links that show the card
 image in a tooltip when hovering over them. You can also quickly create deck listings.
-Author: Sebastian Zaha
-Version: 3.1.7
-Author URI: https://deckbox.org
+Author: Robert Baker
+Version: 2020.08.31a
+Author URI: https://goonhammer.com
 */
 include('lib/bbp-do-shortcodes.php');
 
 
-add_action('init', 'deckbox_launch_tooltip_plugin');
+add_action('init', 'whuw_launch_tooltip_plugin');
 
 
-function deckbox_launch_tooltip_plugin() {
-    $tp = new Deckbox_Tooltip_plugin();
+function whuw_launch_tooltip_plugin() {
+    $tp = new WHUW_Tooltip_plugin();
 }
 
 
-if (! class_exists('Deckbox_Tooltip_plugin')) {
-    class Deckbox_Tooltip_plugin {
+if (! class_exists('WHUW_Tooltip_plugin')) {
+    class WHUW_Tooltip_plugin {
         private $_name;
         private $_value;
         private $_initialValue;
@@ -30,12 +30,12 @@ if (! class_exists('Deckbox_Tooltip_plugin')) {
         private $_images_dir;
 
         function __construct() {
-            $this->_name = 'Magic the Gathering Card Tooltips';
-            $this->_optionName = 'deckbox_tooltip_options';
+            $this->_name = 'Warhammer Underworlds Card Tooltips';
+            $this->_optionName = 'whuw_tooltip_options';
             $this->_value = array();
             $this->_styles = array('tooltip', 'embedded');
-            $this->_resources_dir = plugins_url().'/magic-the-gathering-card-tooltips/resources/';
-            $this->_images_dir = plugins_url().'/magic-the-gathering-card-tooltips/images/';
+            $this->_resources_dir = plugins_url().'/card-tooltips/resources/';
+            $this->_images_dir = plugins_url().'/card-tooltips/images/';
 
             $this->loadSettings();
             $this->init();
@@ -51,16 +51,16 @@ if (! class_exists('Deckbox_Tooltip_plugin')) {
 
         function init_css() {
             echo '<link type="text/css" rel="stylesheet" href="' . $this->_resources_dir .
-                'css/wp_deckbox_mtg.css" media="screen" />' . "\n";
+                'css/wp_deckbox_whuw.css" media="screen" />' . "\n";
         }
 
         function add_shortcodes() {
-            add_shortcode('mtg_card', array($this,'parse_mtg_card'));
-            add_shortcode('card', array($this,'parse_mtg_card'));
-            add_shortcode('c', array($this,'parse_mtg_card'));
-            add_shortcode('mtg_deck', array($this,'parse_mtg_deck'));
-            add_shortcode('deck', array($this,'parse_mtg_deck'));
-            add_shortcode('d', array($this,'parse_mtg_deck'));
+            add_shortcode('whuw_card', array($this,'parse_whuw_card'));
+            //add_shortcode('card', array($this,'parse_whuw_card'));
+            //add_shortcode('c', array($this,'parse_mtg_card'));
+            add_shortcode('whuw_deck', array($this,'parse_whuw_deck'));
+            //add_shortcode('deck', array($this,'parse_mtg_deck'));
+            //add_shortcode('d', array($this,'parse_mtg_deck'));
         }
 
         function add_buttons() {
@@ -75,23 +75,23 @@ if (! class_exists('Deckbox_Tooltip_plugin')) {
         }
 
         function register_button($buttons) {
-            array_push($buttons, "separator", "deckbox");
+            array_push($buttons, "separator", "whuw");
             return $buttons;
         }
 
         function add_tinymce_plugin($plugin_array) {
-            $plugin_array['deckbox'] = $this->_resources_dir.'tinymce3/editor_plugin.js';
+            $plugin_array['whuw'] = $this->_resources_dir.'tinymce3/editor_plugin.js';
             return $plugin_array;
         }
 
         function add_scripts() {
-            wp_enqueue_script('deckbox', 'https://deckbox.org/javascripts/tooltip.js');
+            wp_enqueue_script('deckbox',  $this->_resources_dir.'tooltip.js', array('jquery')); 
             wp_enqueue_script('deckbox_extensions', $this->_resources_dir.'tooltip_extension.js', array('jquery'));
             add_action('wp_head', array($this, 'init_css'));
         }
 
-        function parse_mtg_card($atts, $content=null) {
-            return '<a class="deckbox_link" target="_blank" href="https://deckbox.org/mtg/' . $content . '">' . $content . '</a>';
+        function parse_whuw_card($atts, $content=null) {
+            return '<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
         }
 
         function cleanup_shortcode_content($content) {
@@ -108,16 +108,16 @@ if (! class_exists('Deckbox_Tooltip_plugin')) {
             return $lines;
         }
 
-        function parse_mtg_deck($atts, $content=null) {
+        function parse_whuw_deck($atts, $content=null) {
             extract(shortcode_atts(array(
                         "title" => null,
                         "style" => $this->get_style_name(),
                     ), $atts));
 
             if ($title) {
-                $response = '<h3 class="mtg_deck_title">' . $title . '</h3>';
+                $response = '<h3 class="whuw_deck_title">' . $title . '</h3>';
             }
-            $response .= '<table class="mtg_deck mtg_deck_' . $style .
+            $response .= '<table class="whuw_deck whuw_deck_' . $style .
                 '" cellspacing="0" cellpadding="0" style="max-width:' .
                 $this->get_setting('deck_width') .'px;font-size:' . $this->get_setting('font_size') .
                 '%;line-height:' .$this->get_setting('line_height'). '%"><tr><td>';
@@ -129,53 +129,71 @@ if (! class_exists('Deckbox_Tooltip_plugin')) {
             return $response;
         }
 
-        function parse_mtg_deck_lines($lines, $style) {
-            $current_count = 0;
-            $current_title = '';
-            $current_body = '';
-            $first_card = null;
-            $second_column = false;
+        class WHUW_Tooltip_plugin {
+            function parse_whuw_deck_lines($lines, $style) {
+                $current_count = 0; //the number of cards in the category
+                $current_title = '';
+                $current_body = ''; //the actual html body?
+                $first_card = null; //shown if style is embedded?
+                $second_column = false; //used to keep more than two columns from existing
 
-            for ($i = 0; $i < count($lines); $i++) {
-                $line = $lines[$i];
-
-                if (preg_match('/^([0-9]+)(.*)/', $line, $bits)) {
-                    $card_name = trim($bits[2]);
-                    $first_card = $first_card == null ? $card_name : $first_card;
-                    $card_name = str_replace("’", "'", $card_name);
-                    $line = $bits[1] . '&nbsp;<a class="deckbox_link" target="_blank" href="https://deckbox.org/mtg/'. $card_name .
-                        '">' . $card_name . '</a><br />';
-                    $current_body .= $line;
-                    $current_count += intval($bits[1]);
-                } else {
-                    // Beginning of a new category. If this was not the first one, we put the previous one
-                    // into the response body.
-                    if ($current_title != "") {
-                        $html .= '<span style="font-weight:bold">' . $current_title . ' (' .
-                            $current_count . ')</span><br />';
-                        $html .= $current_body;
-                        if (preg_match("/Sideboard/", $line) && !$second_column) {
-                            $html .= '</td><td>';
-                            $second_column = true;
-                        } else if (preg_match("/Lands/", $line) && !$second_column) {
-                            $html .= '</td><td>';
-                            $second_column = true;
-                        } else {
-                            $html .= '<br />';
+                //read the lines in one by one
+                for ($i = 0; $i < count($lines); $i++) {
+                    $line = $lines[$i]; //obvious
+                    //change below to find "(expansion) name" instead of "nCopies name"
+                    if (preg_match('/^((.*))(.*)/', $line, $bits)) { 
+                        //prep the card
+                        $card_name = trim($bits[2]);
+                        $first_card = $first_card == null ? $card_name : $first_card;
+                        $card_name = str_replace(" ", "_", $card_name); //probably need to change this
+                        //prep the expansion!
+                        $expansion_name = trim($(bits[1]));
+                        $expansion_name = $expansion_name[1: expansion_name.length - 2]; //lol is this even legal?
+                        $expansion_name = str_replace(" ", "%20", $expansion_name);
+                        $line = '&nbsp;<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' 
+                            . $expansion_name . '/' . $card_name .'">' . $card_name . '</a><br />';
+                        $current_body .= $line;
+                        $current_count += 1; //replacing "intval($bits[1]);" becaise each card is unique.
+                    } else {
+                        // Beginning of a new category. If this was not the first one, we put the previous one
+                        // into the response body.
+                        if ($current_title != "") {
+                            $html .= '<span style="font-weight:bold">' . $current_title . ' (' .
+                                $current_count . ')</span><br />';
+                            $html .= $current_body;
+                            <!-- if (preg_match("/Sideboard/", $line) && !$second_column) {
+                                $html .= '</td><td>';
+                                $second_column = true;
+                            } else if (preg_match("/Lands/", $line) && !$second_column) {
+                                $html .= '</td><td>';
+                                $second_column = true;
+                            } -->
+                            //the following are the actual categories for WHUW
+                            if (preg_match("/Power/", $line) && !$second_column) {
+                                $html .= '</td><td>';
+                                $second_column = true;
+                            } else if (preg_match("/Glory/", $line) && !$second_column) {
+                                $html .= '</td><td>';
+                                $second_column = true;
+                            } else {
+                                $html .= '<br />';
+                            }
                         }
+                        //reset the variables whether this is the first title or second!
+                        $current_title = $line; $current_count = 0; $current_body = '';
                     }
-                    $current_title = $line; $current_count = 0; $current_body = '';
                 }
-            }
-            $html .= '<span style="font-weight:bold">' . $current_title . ' (' . $current_count .
-                ')</span><br />' . $current_body;
+                $html .= '<span style="font-weight:bold">' . $current_title . ' (' . $current_count .
+                    ')</span><br />' . $current_body;
 
-            if ($style == 'embedded') {
-                $html .= '<td class="card_box"><img class="on_page" src="https://deckbox.org/mtg/' .
-                    $first_card . '/tooltip" /></td>';
-            }
+                //if $style is embedded show the first card!
+                if ($style == 'embedded') {
+                    $html .= '<td class="card_box"><img class="on_page" src="https://deckbox.org/mtg/' .
+                        $first_card . '/tooltip" /></td>';
+                }
 
-            return $html;
+                return $html;
+            }
         }
 
         function add_option_menu() {
@@ -189,6 +207,9 @@ if (! class_exists('Deckbox_Tooltip_plugin')) {
                 array($this, 'draw_menu'));
         }
 
+        /*
+            Probably don't need to change anything below this line.
+        */
         function draw_menu() {
             echo '
               <div class="wrap">
