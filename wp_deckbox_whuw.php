@@ -91,6 +91,17 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
         }
 
         function parse_whuw_card($atts, $content=null) {
+            if (preg_match('/^(^\([a-zA-z]*\))(.*)/', $content, $bits)) {
+                //prep the card
+                $card_name = trim($bits[2]);
+                $first_card = $first_card == null ? $card_name : $first_card;
+                $card_name = str_replace(" ", "-", $card_name); //probably need to change this
+                //prep the expansion!
+                $expansion_name = trim($bits[1]);
+                $expansion_name = substr($expansion_name, 1, strlen($expansion_name.len) - 2); //lol is this even legal?
+                $expansion_name = str_replace(" ", "%20", $expansion_name);
+                $content = $expansion_name . '/' . $card_name . '.png';
+            }
             return '<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
         }
 
@@ -123,7 +134,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
                 '%;line-height:' .$this->get_setting('line_height'). '%"><tr><td>';
 
             $lines = $this->cleanup_shortcode_content($content);
-            $response .= $this->parse_mtg_deck_lines($lines, $style) . '</td>';
+            $response .= $this->parse_whuw_deck_lines($lines, $style) . '</td>';
             $response .= '</tr></table>';
 
             return $response;
@@ -140,17 +151,17 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
             for ($i = 0; $i < count($lines); $i++) {
                 $line = $lines[$i]; //obvious
                 //change below to find "(expansion) name" instead of "nCopies name"
-                if (preg_match('/^(^(.*$))(.*)/', $line, $bits)) { 
+                if (preg_match('/^(^\([a-zA-z]*\))(.*)/', $line, $bits)) { 
                     //prep the card
                     $card_name = trim($bits[2]);
                     $first_card = $first_card == null ? $card_name : $first_card;
-                    $card_name = str_replace(" ", "_", $card_name); //probably need to change this
+                    $card_name = str_replace(" ", "-", $card_name); //probably need to change this
                     //prep the expansion!
                     $expansion_name = trim($bits[1]);
-                    $expansion_name = substr($expansion_name, 1, strlen($expansion_name.len) - 2); //lol is this even legal?
+                    $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                     $expansion_name = str_replace(" ", "%20", $expansion_name);
                     $line = '&nbsp;<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' 
-                        . $expansion_name . '/' . $card_name .'">' . $card_name . '</a><br />';
+                        . $expansion_name . '/' . $card_name . '.png">' . $card_name . '</a><br />';
                     $current_body .= $line;
                     $current_count += 1; //replacing "intval($bits[1]);" becaise each card is unique.
                 } else {
@@ -187,8 +198,8 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
 
             //if $style is embedded show the first card!
             if ($style == 'embedded') {
-                $html .= '<td class="card_box"><img class="on_page" src="https://deckbox.org/mtg/' .
-                    $first_card . '/tooltip" /></td>';
+                $html .= '<td class="card_box"><img class="on_page" src="https://underworldsdb.com/cards/' 
+                        . $expansion_name . '/' . $card_name . '/tooltip" /></td>';
             }
 
             return $html;
@@ -211,7 +222,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
         function draw_menu() {
             echo '
               <div class="wrap">
-                <h2>Deckbox MtG Card Tooltips Settings</h2><br/>
+                <h2>Deckbox WHUW Card Tooltips Settings</h2><br/>
                 <div id="poststuff" class="ui-sortable"><div class="postbox">
                     <h3 style="font-size:14px;">General Settings</h3>
                     <div class="inside">
