@@ -98,7 +98,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
                 $card_name = str_replace(" ", "-", $card_name); //probably need to change this
                 //prep the expansion!
                 $expansion_name = trim($bits[1]);
-                $expansion_name = substr($expansion_name, 1, strlen($expansion_name.len) - 2); //lol is this even legal?
+                $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                 $expansion_name = str_replace(" ", "%20", $expansion_name);
                 $content = $expansion_name . '/' . $card_name . '.png';
             }
@@ -199,7 +199,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
             //if $style is embedded show the first card!
             if ($style == 'embedded') {
                 $html .= '<td class="card_box"><img class="on_page" src="https://underworldsdb.com/cards/' 
-                        . $expansion_name . '/' . $card_name . '/tooltip" /></td>';
+                        . $expansion_name . '/' . $card_name . '" ></td>';
             }
 
             return $html;
@@ -212,7 +212,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
             }
             $title .= ' Deckbox Tooltips';
 
-            add_options_page('Deckbox Tooltips', $title, 'read', 'magic-the-gathering-card-tooltips',
+            add_options_page('Deckbox Tooltips', $title, 'read', 'warhammer-underworlds-card-tooltips',
                 array($this, 'draw_menu'));
         }
 

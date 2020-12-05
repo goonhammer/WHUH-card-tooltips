@@ -18,37 +18,59 @@ Deckbox.ui.Tooltip.prototype = {
             "<th style='background-position: left bottom;'/><th style='background-position: right bottom;'/></tr></table>";
     },
 
-    showWow: function(posX, posY, content, url, el) {
-        el._shown = true;
-        /* IE does NOT escape quotes apparently. */
-        url = url.replace(/"/g, "%22");
-        /* Problematic with routes on server. */
-        url = url.replace(/\?/g, "");
+    
+    // showWow: function(posX, posY, content, url, el) {
+    //     el._shown = true;
+    //     /* IE does NOT escape quotes apparently. */
+    //     url = url.replace(/"/g, "%22");
+    //     /* Problematic with routes on server. */
+    //     url = url.replace(/\?/g, "");
 
-        if (this.tooltips[url] && this.tooltips[url].content) {
-            content = this._padContent(this.tooltips[url].content);
-        } else {
-            content = this._padContent('Loading...');
-            this.tooltips[url] = this.tooltips[url] || {el: el};
-            Deckbox._.loadJS(url);
-            /* Remeber these for when (if) the register call wants to show the tooltip. */
-            this.posX = posX; this.posY = posY;
-        }
+    //     if (this.tooltips[url] && this.tooltips[url].content) {
+    //         content = this._padContent(this.tooltips[url].content);
+    //     } else {
+    //         content = this._padContent('Loading...');
+    //         this.tooltips[url] = this.tooltips[url] || {el: el};
+    //         Deckbox._.loadJS(url);
+    //         /* Remeber these for when (if) the register call wants to show the tooltip. */
+    //         this.posX = posX; this.posY = posY;
+    //     }
 
-        this.el.style.width = '';
-        this.el.innerHTML = content;
-        this.el.style.display = '';
-        this.el.style.width = (20 + Math.min(330, this.el.childNodes[0].offsetWidth)) + 'px';
-        this.move(posX, posY);
-    },
+    //     this.el.style.width = '';
+    //     this.el.innerHTML = content;
+    //     this.el.style.display = '';
+    //     this.el.style.width = (20 + Math.min(330, this.el.childNodes[0].offsetWidth)) + 'px';
+    //     this.move(posX, posY);
+    // },
 
-    showText: function(posX, posY, text) {
-        this.el.innerHTML = text;
-        this.el.style.display = '';
-        this.move(posX, posY);
-    },
+    // showText: function(posX, posY, text) {
+    //     this.el.innerHTML = text;
+    //     this.el.style.display = '';
+    //     this.move(posX, posY);
+    // },
 
-    showImage: function(posX, posY, image, externalLink) {
+    // showImage: function(posX, posY, image, externalLink) {
+    //     this.el._shown = true;
+    //     if (image.complete) {
+    //         this.el.innerHTML = '';
+    //         this.el.appendChild(image);
+    //         if (externalLink) { this.el.appendChild(this.br); this.el.appendChild(externalLink) }
+    //     } else {
+    //         this.el.innerHTML = 'Loading...';
+    //         image.onload = function() {
+    //             var self = Deckbox._.tooltip('image');
+    //             self.el.innerHTML = '';
+    //             image.onload = null;
+    //             self.el.appendChild(image);
+    //             if (externalLink) { self.el.appendChild(self.br); self.el.appendChild(externalLink) }
+    //             self.move(posX, posY);
+    //         }
+    //     }
+    //     this.el.style.display = '';
+    //     this.move(posX, posY);
+    // },
+
+    showCards: function(posX, posY, image, externalLink) {
         this.el._shown = true;
         if (image.complete) {
             this.el.innerHTML = '';
@@ -57,7 +79,7 @@ Deckbox.ui.Tooltip.prototype = {
         } else {
             this.el.innerHTML = 'Loading...';
             image.onload = function() {
-                var self = Deckbox._.tooltip('image');
+                var self = Deckbox._.tooltip('cards');
                 self.el.innerHTML = '';
                 image.onload = null;
                 self.el.appendChild(image);
@@ -295,7 +317,7 @@ Deckbox._ = {
         } else {
             //Deckbox._.tooltip('wow').showWow(posX, posY, null, el.href + '/tooltip', el);
             //the following is the custom code
-            showImage(el, el.href, posX, posY);
+            showCards(el, el.href, posX, posY);
         }
     }
 
@@ -324,9 +346,9 @@ Deckbox._ = {
                 a.href = el.href;
                 a.target = "_blank";
                 a.innerHTML = "More Details";
-                showImage(el, el.href, posX, posY, a);
+                showCards(el, el.href, posX, posY, a);
             } else {
-                Deckbox._.tooltip('wow').showWow(posX, posY, null, el.href + '/tooltip', el);
+                //Deckbox._.tooltip('wow').showWow(posX, posY, null, el.href + '/tooltip', el);
             }
 
             event.preventDefault();
@@ -342,17 +364,32 @@ Deckbox._ = {
         }
     }
 
-    function showImage(el, url, posX, posY, externalLink) {
+    // function showImage(el, url, posX, posY, externalLink) {
+    //     const img = document.createElement('img');
+    //     url = url.replace(/\?/g, ""); /* Problematic with routes on server. */
+    //     img.src = url;
+
+    //     if (externalLink) {
+    //         Deckbox._.tooltip('image').showImage(posX, posY, img, externalLink);
+    //     } else {
+    //         // wait 100 ms, if we didn't already mouseout of this element, we show the mouseover tooltip
+    //         setTimeout(function() {
+    //             if (el._mo) Deckbox._.tooltip('image').showImage(posX, posY, img, externalLink);
+    //         }, 200)
+    //     }
+    // }
+
+    function showCards(el, url, posX, posY, externalLink) {
         const img = document.createElement('img');
         url = url.replace(/\?/g, ""); /* Problematic with routes on server. */
         img.src = url;
 
         if (externalLink) {
-            Deckbox._.tooltip('image').showImage(posX, posY, img, externalLink);
+            Deckbox._.tooltip('cards').showCards(posX, posY, img, externalLink);
         } else {
             // wait 100 ms, if we didn't already mouseout of this element, we show the mouseover tooltip
             setTimeout(function() {
-                if (el._mo) Deckbox._.tooltip('image').showImage(posX, posY, img, externalLink);
+                if (el._mo) Deckbox._.tooltip('cards').showCards(posX, posY, img, externalLink);
             }, 200)
         }
     }
@@ -381,5 +418,5 @@ Deckbox._ = {
     Deckbox._.addEvent(document, 'mousemove', onmousemove);
     Deckbox._.addEvent(document, 'mouseout', onmouseout);
     Deckbox._.addEvent(document, 'click', click);
-    Deckbox._.loadCSS('./whuw_tooltip.css');
+    Deckbox._.loadCSS('/resources/whuw_tooltip.css');
 })();
