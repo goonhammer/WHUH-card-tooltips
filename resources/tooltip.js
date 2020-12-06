@@ -148,7 +148,7 @@ Deckbox._ = {
         img.style.display = "none"
         img.style.width = "1px"
         img.style.height = "1px"
-        img.src = link.href + '/tooltip';
+        img.src = link.href; // + '/tooltip';
         return img;
     },
 

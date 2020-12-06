@@ -85,7 +85,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
         }
 
         function add_scripts() {
-            wp_enqueue_script('deckbox',  $this->_resources_dir.'tooltip.js', array('jquery')); 
+            //wp_enqueue_script('deckbox',  $this->_resources_dir.'tooltip.js', array('jquery')); 
             wp_enqueue_script('deckbox_extensions', $this->_resources_dir.'tooltip_extension.js', array('jquery'));
             add_action('wp_head', array($this, 'init_css'));
         }
@@ -93,14 +93,14 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
         function parse_whuw_card($atts, $content=null) {
             if (preg_match('/^(^\([a-zA-z]*\))(.*)/', $content, $bits)) {
                 //prep the card
-                $card_name = trim($bits[2]);
-                $first_card = $first_card == null ? $card_name : $first_card;
-                $card_name = str_replace(" ", "-", $card_name); //probably need to change this
-                //prep the expansion!
+                $card_base = trim($bits[2]);
+                $card_name = str_replace(" ", "-", $card_base); //probably need to change this
+            //prep the expansion!
                 $expansion_name = trim($bits[1]);
                 $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                 $expansion_name = str_replace(" ", "%20", $expansion_name);
-                $content = $expansion_name . '/' . $card_name . '.png';
+                $link = $expansion_name . '/' . $card_name . '.png';
+                return '<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' . $link . '">' . $card_base . '</a>';
             }
             return '<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
         }
@@ -153,15 +153,15 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
                 //change below to find "(expansion) name" instead of "nCopies name"
                 if (preg_match('/^(^\([a-zA-z]*\))(.*)/', $line, $bits)) { 
                     //prep the card
-                    $card_name = trim($bits[2]);
+                    $card_base = trim($bits[2]);
+                    $card_name = str_replace(" ", "-", $card_base); //probably need to change this
                     $first_card = $first_card == null ? $card_name : $first_card;
-                    $card_name = str_replace(" ", "-", $card_name); //probably need to change this
                     //prep the expansion!
                     $expansion_name = trim($bits[1]);
                     $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                     $expansion_name = str_replace(" ", "%20", $expansion_name);
                     $line = '&nbsp;<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' 
-                        . $expansion_name . '/' . $card_name . '.png">' . $card_name . '</a><br />';
+                        . $expansion_name . '/' . $card_name . '.png">' . $card_base . '</a><br />';
                     $current_body .= $line;
                     $current_count += 1; //replacing "intval($bits[1]);" becaise each card is unique.
                 } else {
