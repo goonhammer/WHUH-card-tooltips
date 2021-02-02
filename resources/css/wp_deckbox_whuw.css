@@ -51,8 +51,9 @@ table.whuw_deck td.card_box {
 .modal-content {
   margin: auto;
   display: block;
-  /*padding-top: 10%;*/ /* Location of the box */
-  /*height: 80%;*/
+  /*top: 25%;*/ /* Location of the box */
+  /* height: 80%;*/
+  margin-top: 15%;
   /* width: 80%;*/
   max-width: 532px;
   max-height: 744px;
@@ -86,7 +87,7 @@ table.whuw_deck td.card_box {
   /* top: 15px;
   right: 35px; */
   position:relative;
-  top: 100px;
+  margin-top: 15%;
   float: right;
   align-content: right;
   text-align: right;
