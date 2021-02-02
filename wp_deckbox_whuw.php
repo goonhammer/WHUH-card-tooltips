@@ -85,8 +85,8 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
         }
 
         function add_scripts() {
-            //wp_enqueue_script('deckbox',  $this->_resources_dir.'tooltip.js', array('jquery')); 
-            wp_enqueue_script('deckbox_extensions', $this->_resources_dir.'tooltip_extension.js', array('jquery'));
+            wp_enqueue_script('whuw_hover_pic',  $this->_resources_dir.'hover_pic.js', array('jquery')); 
+            wp_enqueue_script('whuw_deck_pic', $this->_resources_dir.'deck_pic.js', array('jquery'));
             add_action('wp_head', array($this, 'init_css'));
         }
 
@@ -100,9 +100,9 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
                 $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                 $expansion_name = str_replace(" ", "%20", $expansion_name);
                 $link = $expansion_name . '/' . $card_name . '.png';
-                return '<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' . $link . '">' . $card_base . '</a>';
+                return '<a class="whuw_card" target="_blank" href="https://underworldsdb.com/cards/' . $link . '">' . $card_base . '</a>';
             }
-            return '<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
+            return '<a class="whuw_card" target="_blank" href="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
         }
 
         function cleanup_shortcode_content($content) {
