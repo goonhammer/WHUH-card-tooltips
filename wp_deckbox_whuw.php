@@ -100,9 +100,9 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
                 $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                 $expansion_name = str_replace(" ", "%20", $expansion_name);
                 $link = $expansion_name . '/' . $card_name . '.png';
-                return '<a class="whuw_card" target="_blank" href="https://underworldsdb.com/cards/' . $link . '">' . $card_base . '</a>';
+                return '<a class="whuw_card" target="_blank" href="#" src="https://underworldsdb.com/cards/' . $link . '">' . $card_base . '</a>';
             }
-            return '<a class="whuw_card" target="_blank" href="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
+            return '<a class="whuw_card" target="_blank" href="#" src="https://underworldsdb.com/cards/' . $content . '">' . $content . '</a>';
         }
 
         function cleanup_shortcode_content($content) {
@@ -160,7 +160,7 @@ if (! class_exists('WHUW_Tooltip_plugin')) {
                     $expansion_name = trim($bits[1]);
                     $expansion_name = substr($expansion_name, 1, strlen($expansion_name) - 2); //lol is this even legal?
                     $expansion_name = str_replace(" ", "%20", $expansion_name);
-                    $line = '&nbsp;<a class="deckbox_link" target="_blank" href="https://underworldsdb.com/cards/' 
+                    $line = '&nbsp;<a class="whuw_card" href="#" src="https://underworldsdb.com/cards/' 
                         . $expansion_name . '/' . $card_name . '.png">' . $card_base . '</a><br />';
                     $current_body .= $line;
                     $current_count += 1; //replacing "intval($bits[1]);" becaise each card is unique.

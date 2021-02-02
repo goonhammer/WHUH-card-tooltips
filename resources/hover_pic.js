@@ -5,8 +5,8 @@
 //start up function goes here!
 jQuery(document).ready(function($) {
 //inser the following html into the body of the document
-    let modal = new Node();
-    modal.innerHTML = `<!-- The Modal -->
+    let wrapper = document.createElement("span");
+    wrapper.innerHTML = `<!-- The Modal -->
     <div id="whuwModal" class="modal">
 
     <!-- The Close Button -->
@@ -18,13 +18,14 @@ jQuery(document).ready(function($) {
     <!-- Modal Caption (Image Text) -->
     <div id="caption"></div>
     </div>`
-    document.body.appendChild(modal)
+    document.body.appendChild(wrapper)
+    let modal = document.getElementById("whuwModal");
     
     // Get the modal
     //var modal = document.getElementById("whuwModal");
 
     // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
+    let span = document.getElementsByClassName("close")[0];
 
     // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
@@ -33,12 +34,13 @@ jQuery(document).ready(function($) {
 
 //do the following once for every class=whuw_card
 // Get the image and insert it inside the modal - use its "alt" text as a caption
-    var modalImg = document.getElementById("modalImg");
-    var captionText = document.getElementById("caption");
-    $(".whuw_card").onclick(function() {
+    let modalImg = document.getElementById("modalImg");
+    let captionText = document.getElementById("caption");
+    $(".whuw_card").click(function(event) {
+        event.preventDefault();
         modal.style.display = "block";
-        modalImg.src = this.href;
-        captaionText.innerHTML = this.innerHTML;
+        modalImg.src = $(this).attr('src');
+        captionText.innerHTML = $(this).html();
     });
     // for (let whuwCard of document.getElementsByClassName("whuw_card")) {
     //     whuwCard.onclick = function() {
