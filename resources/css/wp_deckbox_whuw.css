@@ -38,7 +38,6 @@ table.whuw_deck td.card_box {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -52,8 +51,11 @@ table.whuw_deck td.card_box {
 .modal-content {
   margin: auto;
   display: block;
+  padding-top: 10%; /* Location of the box */
+  height: 80%;
   width: 80%;
-  max-width: 700px;
+  max-width: 532px;
+  max-height: 744px;
 }
 
 /* Caption of Modal Image (Image Text) - Same Width as the Image */
@@ -61,11 +63,11 @@ table.whuw_deck td.card_box {
   margin: auto;
   display: block;
   width: 80%;
-  max-width: 700px;
+  max-width: 532px;
   text-align: center;
   color: #ccc;
   padding: 10px 0;
-  height: 150px;
+  max-height: 66px;
 }
 
 /* Add Animation - Zoom in the Modal */
@@ -81,11 +83,14 @@ table.whuw_deck td.card_box {
 
 /* The Close Button */
 .close {
-  position: absolute;
-  top: 15px;
-  right: 35px;
+  /* position: fixed; */
+  /* top: 15px;
+  right: 35px; */
+  float: right;
+  align-content: right;
+  text-align: right;
   color: #f1f1f1;
-  font-size: 40px;
+  font-size: 5em;
   font-weight: bold;
   transition: 0.3s;
 }
@@ -98,8 +103,15 @@ table.whuw_deck td.card_box {
 }
 
 /* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
+@media only screen and (max-width: 532px){
   .modal-content {
     width: 100%;
+  }
+}
+
+/* 100% Image Height on Smaller Screens */
+@media only screen and (max-height: 744px){
+  .modal-content {
+    height: 100%;
   }
 }
