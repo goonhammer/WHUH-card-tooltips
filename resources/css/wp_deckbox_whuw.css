@@ -51,9 +51,9 @@ table.whuw_deck td.card_box {
 .modal-content {
   margin: auto;
   display: block;
-  padding-top: 10%; /* Location of the box */
-  height: 80%;
-  width: 80%;
+  /*padding-top: 10%;*/ /* Location of the box */
+  /*height: 80%;*/
+  /* width: 80%;*/
   max-width: 532px;
   max-height: 744px;
 }
@@ -62,7 +62,7 @@ table.whuw_deck td.card_box {
 #caption {
   margin: auto;
   display: block;
-  width: 80%;
+  /*width: 80%;*/
   max-width: 532px;
   text-align: center;
   color: #ccc;
@@ -83,9 +83,10 @@ table.whuw_deck td.card_box {
 
 /* The Close Button */
 .close {
-  /* position: fixed; */
   /* top: 15px;
   right: 35px; */
+  position:relative;
+  top: 100px;
   float: right;
   align-content: right;
   text-align: right;
